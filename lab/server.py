@@ -139,3 +139,44 @@ def name_search():
     
     # if no match is found, return a JSON response indicating a 404
     return {'message' : 'Person not found'}, 404
+
+"""
+Next will be a GET /count endpoint
+"""
+@app.route('/count')
+def count():
+    try:
+        return {'data count' : len(data)}, 200
+        
+    except NameError:
+        return {'message' : 'data not defined'}, 500
+
+""""
+Next is a GET /person/id endpoint
+"""
+
+@app.route('/person/<var_name>')
+def find_by_uuid(var_name):
+    for person in data:
+        if person["id"] == str(var_name):
+            return person
+    return {'message' : 'Person not found'}, 404
+
+"""
+Next, a DELETE endpoint
+"""
+
+@app.route('/person/<var_name>', methods=['DELETE'])
+def delete_person(var_name):
+    for person in data:
+        if person['id'] == str(var_name):
+            data.remove(person)
+            return {'message' : 'Person deleted'}, 200
+    return {'message' : 'Person not found'}, 404
+
+"""
+Finally, a global error handler
+"""
+@app.errorhandler(Exception)
+def handle_exception(e):
+    return {'message' : str(e)}, 500
